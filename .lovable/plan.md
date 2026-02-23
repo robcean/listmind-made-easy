@@ -1,31 +1,33 @@
 
-
-## Fix auto-scroll en mobile accordion
+## Usar el emoji de categoría como drag handle
 
 ### Cambio
-Actualizar el cálculo de scroll en `src/components/CategoryAccordion.tsx` para usar `getBoundingClientRect()` en lugar de `offsetTop`.
+Reemplazar el ícono de 6 puntitos (`GripVertical`) por el emoji de la categoría como zona de long-press para activar el drag.
+
+### Cómo funciona ahora
+- Hay un `div` separado a la izquierda con `GripVertical` (los 6 puntitos) que actúa como drag handle
+- El emoji está dentro del `button` de expand/collapse
+
+### Qué cambia
+1. **Eliminar** el `div` del `GripVertical` y su import
+2. **Mover** el emoji fuera del `button` y convertirlo en el drag handle con `onTouchStart`
+3. **El emoji** tendrá `touch-none select-none` para funcionar como grip
+4. Tocar el emoji brevemente seguirá sin hacer nada (se necesita long press de 500ms para arrastrar)
+5. El `button` de expand/collapse pierde el emoji pero mantiene el nombre, count y chevron
+6. **Ghost flotante** también usa el emoji en vez de `GripVertical`
 
 ### Detalle técnico
-En la función `toggle`, dentro del `setTimeout`, reemplazar:
+
+**CategoryAccordion.tsx** - Estructura actual del row:
 ```
-const elTop = el.offsetTop - container.offsetTop;
-container.scrollTo({ top: elTop, behavior: "smooth" });
-```
-Por:
-```
-const containerRect = container.getBoundingClientRect();
-const elRect = el.getBoundingClientRect();
-const targetTop = container.scrollTop + (elRect.top - containerRect.top);
-container.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
+[GripVertical div] [Button: emoji + nombre + count + chevron]
 ```
 
-Esto calcula la posición real del elemento relativa al contenedor visible, sumando el scroll actual, lo que garantiza que la categoría quede alineada al tope sin importar la estructura de layout.
+Nueva estructura:
+```
+[Emoji div (drag handle)] [Button: nombre + count + chevron]
+```
 
-### Archivo modificado
-- `src/components/CategoryAccordion.tsx` (solo la función `toggle`, lineas 28-33)
-
-### Sin cambios
-- Vista tablet/desktop
-- Chat view, bottom nav, SwipeableItem
-- Lógica backend
-
+- El `div` del emoji tendrá las mismas props de drag: `onTouchStart`, `touch-none`, `select-none`
+- Se elimina el import de `GripVertical`
+- El ghost flotante al fondo del archivo también se actualiza para mostrar el emoji en vez de los puntitos
