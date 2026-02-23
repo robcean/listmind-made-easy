@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ChevronDown, GripVertical } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fetchItems } from "@/services/api";
 import { mockItems } from "@/mocks/data";
@@ -120,12 +120,12 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, onReorder
           >
             {/* Category row */}
             <div className="flex items-center">
-              {/* Drag handle */}
+              {/* Emoji drag handle */}
               <div
-                className="flex items-center justify-center w-8 h-[56px] shrink-0 touch-none select-none"
+                className="flex items-center justify-center w-10 h-[56px] shrink-0 touch-none select-none cursor-grab text-xl"
                 onTouchStart={(e) => handleGripTouchStart(cat.id, e)}
               >
-                <GripVertical className="h-4 w-4 text-muted-foreground/40" />
+                {cat.icon}
               </div>
 
               <button
@@ -141,7 +141,6 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, onReorder
                     : undefined
                 }
               >
-                <span className="text-xl shrink-0">{cat.icon}</span>
                 <span
                   className={cn(
                     "flex-1 text-left text-sm font-medium truncate",
@@ -231,13 +230,12 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, onReorder
           className="rounded-xl shadow-lg shadow-black/20 scale-[1.03] opacity-90"
         >
           <div className="flex items-center">
-            <div className="flex items-center justify-center w-8 h-[56px] shrink-0">
-              <GripVertical className="h-4 w-4 text-muted-foreground/40" />
+            <div className="flex items-center justify-center w-10 h-[56px] shrink-0 text-xl">
+              {draggingCat.icon}
             </div>
             <div
               className="flex items-center flex-1 gap-3 px-3 py-3 min-h-[56px] bg-card border border-border rounded-xl"
             >
-              <span className="text-xl shrink-0">{draggingCat.icon}</span>
               <span className="flex-1 text-left text-sm font-medium truncate text-foreground">
                 {draggingCat.name}
               </span>
