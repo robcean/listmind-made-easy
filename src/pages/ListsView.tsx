@@ -13,8 +13,10 @@ import { t } from "@/i18n";
 import { Archive, RotateCcw, ChevronDown } from "lucide-react";
 import SwipeableItem from "@/components/SwipeableItem";
 import EditItemSheet from "@/components/EditItemSheet";
+import CategoryGrid from "@/components/CategoryGrid";
 import { cn } from "@/lib/utils";
 import type { Item } from "@/types";
+
 
 const ListsView = () => {
   const categories = useStore((s) => s.categories);
@@ -189,8 +191,17 @@ const ListsView = () => {
 
   return (
     <div className="flex flex-col h-full page-transition">
-      {/* Dynamic tab bar */}
-      <div className="flex gap-2 px-4 pt-4 pb-2 overflow-x-auto scrollbar-hide">
+      {/* Category grid for mobile/tablet */}
+      <div className="lg:hidden">
+        <CategoryGrid
+          categories={categories}
+          activeTab={activeTab}
+          onSelect={setActiveTab}
+        />
+      </div>
+
+      {/* Horizontal tabs for desktop */}
+      <div className="hidden lg:flex gap-2 px-4 pt-4 pb-2 overflow-x-auto scrollbar-hide">
         {categories.map((cat) => {
           const isActive = cat.id === activeTab;
           return (
@@ -219,7 +230,7 @@ const ListsView = () => {
           );
         })}
 
-        {/* Archived toggle */}
+        {/* Archived toggle — desktop */}
         {archivedCategories.length > 0 && (
           <button
             onClick={() => setShowArchived(!showArchived)}
