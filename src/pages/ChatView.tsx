@@ -48,7 +48,7 @@ const ChatView = () => {
           setMessages([{
             id: "msg_welcome",
             role: "assistant",
-            text: "Hey! I'm your ListMind assistant. Tell me what you need — add items, create lists, set reminders, or send me a photo and I'll help you with it.",
+            text: "Hey! I'm your meSync assistant. Tell me what you need — add items, create lists, set reminders, or send me a photo and I'll help you with it.",
             actions: [],
             timestamp: new Date().toISOString(),
           }]);
@@ -60,7 +60,7 @@ const ChatView = () => {
           setMessages([{
             id: "msg_welcome",
             role: "assistant",
-            text: "Hey! I'm your ListMind assistant. Tell me what you need — add items, create lists, set reminders, or send me a photo and I'll help you with it.",
+            text: "Hey! I'm your meSync assistant. Tell me what you need — add items, create lists, set reminders, or send me a photo and I'll help you with it.",
             actions: [],
             timestamp: new Date().toISOString(),
           }]);
