@@ -14,6 +14,7 @@ import { Archive, RotateCcw, ChevronDown } from "lucide-react";
 import SwipeableItem from "@/components/SwipeableItem";
 import EditItemSheet from "@/components/EditItemSheet";
 import CategoryGrid from "@/components/CategoryGrid";
+import CategoryAccordion from "@/components/CategoryAccordion";
 import { cn } from "@/lib/utils";
 import type { Item } from "@/types";
 
@@ -191,8 +192,18 @@ const ListsView = () => {
 
   return (
     <div className="flex flex-col h-full page-transition">
-      {/* Category grid for mobile/tablet */}
-      <div className="lg:hidden">
+      {/* Accordion for mobile */}
+      <div className="sm:hidden flex-1 overflow-y-auto">
+        <CategoryAccordion
+          categories={categories}
+          onComplete={handleComplete}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+        />
+      </div>
+
+      {/* Grid for tablet */}
+      <div className="hidden sm:block lg:hidden">
         <CategoryGrid
           categories={categories}
           activeTab={activeTab}
@@ -276,7 +287,7 @@ const ListsView = () => {
       )}
 
       {/* Items */}
-      <div className="flex-1 overflow-y-auto px-4 pt-2 pb-4 space-y-2">
+      <div className="hidden sm:block flex-1 overflow-y-auto px-4 pt-2 pb-4 space-y-2">
         {activeItems.length === 0 && completedItems.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground space-y-2">
             <span className="text-4xl">📝</span>
