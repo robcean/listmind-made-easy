@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fetchItems } from "@/services/api";
 import { mockItems } from "@/mocks/data";
 import { t } from "@/i18n";
 import SwipeableItem from "@/components/SwipeableItem";
+import { useCategoryDrag } from "@/hooks/useCategoryDrag";
 import type { Category, Item } from "@/types";
 
 interface Props {
@@ -12,16 +13,34 @@ interface Props {
   onComplete: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (item: Item) => void;
+  onReorder?: (fromIndex: number, toIndex: number) => void;
   scrollContainerRef?: React.RefObject<HTMLDivElement>;
 }
 
-const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, scrollContainerRef }: Props) => {
+const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, onReorder, scrollContainerRef }: Props) => {
   const [openId, setOpenId] = useState<string | null>(null);
   const [itemsMap, setItemsMap] = useState<Record<string, Item[]>>({});
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const rowRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
+  const collapseOpen = useCallback(() => setOpenId(null), []);
+
+  const {
+    dragState,
+    handleGripTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+    handleTouchCancel,
+  } = useCategoryDrag({
+    categories,
+    rowRefs,
+    onReorder: onReorder ?? (() => {}),
+    onCollapseOpen: collapseOpen,
+    scrollContainerRef,
+  });
+
   const toggle = useCallback((id: string) => {
+    if (dragState.draggingId) return; // Don't toggle while dragging
     setOpenId((prev) => {
       const next = prev === id ? null : id;
       if (next) {
@@ -40,7 +59,7 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, scrollCon
       }
       return next;
     });
-  }, [scrollContainerRef]);
+  }, [scrollContainerRef, dragState.draggingId]);
 
   // Load items when a category is expanded
   useEffect(() => {
@@ -60,55 +79,94 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, scrollCon
     load();
   }, [openId, itemsMap]);
 
+  // Build ordered list for rendering (with placeholder position)
+  const renderCategories = (() => {
+    if (!dragState.draggingId || dragState.dragOverIndex === null) return categories;
+
+    const fromIdx = categories.findIndex((c) => c.id === dragState.draggingId);
+    if (fromIdx === -1) return categories;
+
+    const result = categories.filter((c) => c.id !== dragState.draggingId);
+    result.splice(dragState.dragOverIndex, 0, categories[fromIdx]);
+    return result;
+  })();
+
+  const draggingCat = dragState.draggingId
+    ? categories.find((c) => c.id === dragState.draggingId)
+    : null;
+
   return (
-    <div className="flex flex-col gap-1.5 px-4 pt-4 pb-2">
-      {categories.map((cat) => {
-        const isOpen = openId === cat.id;
+    <div
+      className="flex flex-col gap-1.5 px-4 pt-4 pb-2"
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
+    >
+      {renderCategories.map((cat) => {
+        const isOpen = openId === cat.id && !dragState.draggingId;
+        const isDragging = dragState.draggingId === cat.id;
         const items = itemsMap[cat.id] ?? [];
         const activeItems = items.filter((i) => !i.isCompleted).sort((a, b) => a.position - b.position);
         const completedItems = items.filter((i) => i.isCompleted).sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
         return (
-          <div key={cat.id} ref={(el) => { rowRefs.current[cat.id] = el; }} className="rounded-xl overflow-hidden">
+          <div
+            key={cat.id}
+            ref={(el) => { rowRefs.current[cat.id] = el; }}
+            className={cn(
+              "rounded-xl overflow-hidden transition-all duration-200",
+              isDragging && "opacity-30 scale-95"
+            )}
+          >
             {/* Category row */}
-            <button
-              onClick={() => toggle(cat.id)}
-              className={cn(
-                "flex items-center w-full gap-3 px-4 py-3 min-h-[56px] transition-all",
-                "bg-card border border-border rounded-xl",
-                isOpen && "border-primary/40 ring-1 ring-primary/20"
-              )}
-              style={
-                isOpen
-                  ? { backgroundColor: `${cat.color}15`, borderColor: `${cat.color}40` }
-                  : undefined
-              }
-            >
-              <span className="text-xl shrink-0">{cat.icon}</span>
-              <span
-                className={cn(
-                  "flex-1 text-left text-sm font-medium truncate",
-                  isOpen ? "text-foreground" : "text-muted-foreground"
-                )}
-                style={isOpen ? { color: cat.color ?? undefined } : undefined}
+            <div className="flex items-center">
+              {/* Drag handle */}
+              <div
+                className="flex items-center justify-center w-8 h-[56px] shrink-0 touch-none select-none"
+                onTouchStart={(e) => handleGripTouchStart(cat.id, e)}
               >
-                {cat.name}
-              </span>
-              <span className="text-xs text-muted-foreground tabular-nums">
-                {cat.itemCount}
-              </span>
-              <ChevronDown
+                <GripVertical className="h-4 w-4 text-muted-foreground/40" />
+              </div>
+
+              <button
+                onClick={() => toggle(cat.id)}
                 className={cn(
-                  "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200",
-                  isOpen && "rotate-180"
+                  "flex items-center flex-1 gap-3 px-3 py-3 min-h-[56px] transition-all",
+                  "bg-card border border-border rounded-xl",
+                  isOpen && "border-primary/40 ring-1 ring-primary/20"
                 )}
-              />
-            </button>
+                style={
+                  isOpen
+                    ? { backgroundColor: `${cat.color}15`, borderColor: `${cat.color}40` }
+                    : undefined
+                }
+              >
+                <span className="text-xl shrink-0">{cat.icon}</span>
+                <span
+                  className={cn(
+                    "flex-1 text-left text-sm font-medium truncate",
+                    isOpen ? "text-foreground" : "text-muted-foreground"
+                  )}
+                  style={isOpen ? { color: cat.color ?? undefined } : undefined}
+                >
+                  {cat.name}
+                </span>
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {cat.itemCount}
+                </span>
+                <ChevronDown
+                  className={cn(
+                    "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200",
+                    isOpen && "rotate-180"
+                  )}
+                />
+              </button>
+            </div>
 
             {/* Expanded items */}
             <div
               className={cn(
-                "grid transition-all duration-200 ease-out",
+                "grid transition-all duration-200 ease-out ml-8",
                 isOpen ? "grid-rows-[1fr] opacity-100 mt-1.5" : "grid-rows-[0fr] opacity-0"
               )}
             >
@@ -165,6 +223,32 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, scrollCon
       })}
       {/* Bottom spacer so any category can scroll to the top */}
       <div className="min-h-[60vh]" />
+
+      {/* Floating drag ghost */}
+      {draggingCat && dragState.floatingStyle && (
+        <div
+          style={dragState.floatingStyle}
+          className="rounded-xl shadow-lg shadow-black/20 scale-[1.03] opacity-90"
+        >
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-8 h-[56px] shrink-0">
+              <GripVertical className="h-4 w-4 text-muted-foreground/40" />
+            </div>
+            <div
+              className="flex items-center flex-1 gap-3 px-3 py-3 min-h-[56px] bg-card border border-border rounded-xl"
+            >
+              <span className="text-xl shrink-0">{draggingCat.icon}</span>
+              <span className="flex-1 text-left text-sm font-medium truncate text-foreground">
+                {draggingCat.name}
+              </span>
+              <span className="text-xs text-muted-foreground tabular-nums">
+                {draggingCat.itemCount}
+              </span>
+              <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

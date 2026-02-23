@@ -31,6 +31,7 @@ const ListsView = () => {
   const completeItem = useStore((s) => s.completeItem);
   const removeItem = useStore((s) => s.removeItem);
   const storeUpdateItem = useStore((s) => s.updateItem);
+  const reorderCategories = useStore((s) => s.reorderCategories);
   const updateCategoryItemCount = useStore((s) => s.updateCategoryItemCount);
   const archivedCategories = useStore((s) => s.archivedCategories);
   const setArchivedCategories = useStore((s) => s.setArchivedCategories);
@@ -200,6 +201,7 @@ const ListsView = () => {
           onComplete={handleComplete}
           onDelete={handleDelete}
           onEdit={handleEdit}
+          onReorder={reorderCategories}
           scrollContainerRef={mobileScrollRef}
         />
       </div>
