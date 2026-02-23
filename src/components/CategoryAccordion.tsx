@@ -163,6 +163,8 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, scrollCon
           </div>
         );
       })}
+      {/* Bottom spacer so any category can scroll to the top */}
+      <div className="min-h-[60vh]" />
     </div>
   );
 };
