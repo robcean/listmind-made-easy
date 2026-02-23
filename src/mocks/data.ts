@@ -6,7 +6,7 @@ export const mockCategories: Category[] = [
   { id: "cat_03", name: "Groceries", slug: "groceries", position: 2, icon: "🛒", color: "#4ECDC4", itemCount: 11, createdAt: "2026-02-20T10:00:00Z" },
   { id: "cat_04", name: "Italian Restaurants", slug: "italian-restaurants", position: 3, icon: "🍝", color: "#FF8A65", itemCount: 5, createdAt: "2026-02-20T10:00:00Z" },
   { id: "cat_05", name: "Breakfast Ideas", slug: "breakfast-ideas", position: 4, icon: "🥞", color: "#AB47BC", itemCount: 5, createdAt: "2026-02-20T10:00:00Z" },
-  { id: "cat_06", name: "Amazon", slug: "amazon", position: 5, icon: "📦", color: "#FF9800", itemCount: 1, createdAt: "2026-02-20T10:00:00Z" },
+  { id: "cat_06", name: "Amazon", slug: "amazon", position: 5, icon: "📦", color: "#FF9800", itemCount: 10, createdAt: "2026-02-20T10:00:00Z" },
   { id: "cat_07", name: "Postres Fáciles", slug: "postres-faciles", position: 6, icon: "🍰", color: "#E91E63", itemCount: 3, createdAt: "2026-02-20T10:00:00Z" },
   { id: "cat_08", name: "Notas", slug: "notas", position: 7, icon: "📝", color: "#607D8B", itemCount: 2, createdAt: "2026-02-20T10:00:00Z" },
 ];
@@ -20,6 +20,17 @@ export const mockItems: Item[] = [
   { id: "item_04", categoryId: "cat_03", text: "Whole milk", isCompleted: false, position: 0, recurrence: "weekly", time: null, dueAt: null, metadata: { quantity: 1, unit: "gallon" }, createdAt: "2026-02-20T12:00:00Z", updatedAt: "2026-02-20T12:00:00Z" },
   { id: "item_05", categoryId: "cat_03", text: "Eggs", isCompleted: false, position: 1, recurrence: "weekly", time: null, dueAt: null, metadata: { quantity: 1, unit: "dozen" }, createdAt: "2026-02-20T12:01:00Z", updatedAt: "2026-02-20T12:01:00Z" },
   { id: "item_06", categoryId: "cat_03", text: "Bananas", isCompleted: true, position: 2, recurrence: "none", time: null, dueAt: null, metadata: { quantity: 6 }, createdAt: "2026-02-20T12:02:00Z", updatedAt: "2026-02-21T09:00:00Z" },
+  // Amazon
+  { id: "item_a01", categoryId: "cat_06", text: "USB-C Cable 6ft", isCompleted: false, position: 0, recurrence: "none", time: null, dueAt: null, metadata: {}, createdAt: "2026-02-20T14:00:00Z", updatedAt: "2026-02-20T14:00:00Z" },
+  { id: "item_a02", categoryId: "cat_06", text: "Wireless Mouse", isCompleted: false, position: 1, recurrence: "none", time: null, dueAt: null, metadata: { brand: "Logitech" }, createdAt: "2026-02-20T14:01:00Z", updatedAt: "2026-02-20T14:01:00Z" },
+  { id: "item_a03", categoryId: "cat_06", text: "Standing Desk Mat", isCompleted: false, position: 2, recurrence: "none", time: null, dueAt: null, metadata: {}, createdAt: "2026-02-20T14:02:00Z", updatedAt: "2026-02-20T14:02:00Z" },
+  { id: "item_a04", categoryId: "cat_06", text: "Blue Light Glasses", isCompleted: false, position: 3, recurrence: "none", time: null, dueAt: null, metadata: {}, createdAt: "2026-02-20T14:03:00Z", updatedAt: "2026-02-20T14:03:00Z" },
+  { id: "item_a05", categoryId: "cat_06", text: "Protein Bars (12 pack)", isCompleted: false, position: 4, recurrence: "monthly", time: null, dueAt: null, metadata: {}, createdAt: "2026-02-20T14:04:00Z", updatedAt: "2026-02-20T14:04:00Z" },
+  { id: "item_a06", categoryId: "cat_06", text: "Noise Cancelling Earbuds", isCompleted: false, position: 5, recurrence: "none", time: null, dueAt: null, metadata: { brand: "Sony" }, createdAt: "2026-02-20T14:05:00Z", updatedAt: "2026-02-20T14:05:00Z" },
+  { id: "item_a07", categoryId: "cat_06", text: "HDMI Cable 10ft", isCompleted: false, position: 6, recurrence: "none", time: null, dueAt: null, metadata: {}, createdAt: "2026-02-20T14:06:00Z", updatedAt: "2026-02-20T14:06:00Z" },
+  { id: "item_a08", categoryId: "cat_06", text: "Desk Organizer", isCompleted: true, position: 7, recurrence: "none", time: null, dueAt: null, metadata: {}, createdAt: "2026-02-20T14:07:00Z", updatedAt: "2026-02-21T10:00:00Z" },
+  { id: "item_a09", categoryId: "cat_06", text: "Webcam 1080p", isCompleted: true, position: 8, recurrence: "none", time: null, dueAt: null, metadata: {}, createdAt: "2026-02-20T14:08:00Z", updatedAt: "2026-02-21T11:00:00Z" },
+  { id: "item_a10", categoryId: "cat_06", text: "Monitor Light Bar", isCompleted: false, position: 9, recurrence: "none", time: null, dueAt: null, metadata: {}, createdAt: "2026-02-20T14:09:00Z", updatedAt: "2026-02-20T14:09:00Z" },
 ];
 
 export const mockChatHistory: ChatMessage[] = [
