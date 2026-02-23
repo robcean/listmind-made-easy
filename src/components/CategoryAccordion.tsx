@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fetchItems } from "@/services/api";
@@ -18,9 +18,18 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit }: Props) 
   const [openId, setOpenId] = useState<string | null>(null);
   const [itemsMap, setItemsMap] = useState<Record<string, Item[]>>({});
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const rowRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const toggle = useCallback((id: string) => {
-    setOpenId((prev) => (prev === id ? null : id));
+    setOpenId((prev) => {
+      const next = prev === id ? null : id;
+      if (next) {
+        setTimeout(() => {
+          rowRefs.current[next]?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 300);
+      }
+      return next;
+    });
   }, []);
 
   // Load items when a category is expanded
@@ -50,7 +59,7 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit }: Props) 
         const completedItems = items.filter((i) => i.isCompleted).sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
         return (
-          <div key={cat.id} className="rounded-xl overflow-hidden">
+          <div key={cat.id} ref={(el) => { rowRefs.current[cat.id] = el; }} className="rounded-xl overflow-hidden">
             {/* Category row */}
             <button
               onClick={() => toggle(cat.id)}
