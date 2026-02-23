@@ -29,8 +29,10 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, scrollCon
           const el = rowRefs.current[next];
           const container = scrollContainerRef?.current;
           if (el && container) {
-            const elTop = el.offsetTop - container.offsetTop;
-            container.scrollTo({ top: elTop, behavior: "smooth" });
+            const containerRect = container.getBoundingClientRect();
+            const elRect = el.getBoundingClientRect();
+            const targetTop = container.scrollTop + (elRect.top - containerRect.top);
+            container.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
           } else if (el) {
             el.scrollIntoView({ behavior: "smooth", block: "start" });
           }
