@@ -61,7 +61,7 @@ const translations: Record<string, Record<Lang, string>> = {
   },
 
   // App
-  "app.name": { en: "ListMind", es: "ListMind" },
+  "app.name": { en: "meSync", es: "meSync" },
   "app.tagline": {
     en: "Your ADHD-friendly list manager",
     es: "Tu gestor de listas para ADHD",

@@ -41,7 +41,7 @@ const AppLayout = () => {
             titleLongPress.isLongPressing && "scale-95 opacity-70"
           )}
         >
-          🧠 {t("app.name")}
+          🔄 {t("app.name")}
         </h1>
         <span className="text-xs text-muted-foreground uppercase tracking-wider">
           {language}

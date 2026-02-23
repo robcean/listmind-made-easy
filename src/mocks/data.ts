@@ -37,7 +37,7 @@ export const mockChatHistory: ChatMessage[] = [
   {
     id: "msg_01",
     role: "assistant",
-    text: "Hey! I'm your ListMind assistant. Tell me what you need — add items, create lists, set reminders. I've got you. 🧠",
+    text: "Hey! I'm your meSync assistant. Tell me what you need — add items, create lists, set reminders. I've got you. 🧠",
     actions: [],
     timestamp: "2026-02-20T10:00:00Z",
   },
