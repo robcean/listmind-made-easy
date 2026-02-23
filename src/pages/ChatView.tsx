@@ -253,8 +253,8 @@ const ChatView = () => {
                   )
                 )}
                 {msg.role === "assistant" ? (
+                <div className="prose prose-sm prose-invert max-w-none [&>p]:m-0 [&>ul]:m-0 [&>ol]:m-0 [&>p+p]:mt-1.5 [&>ul]:pl-4 [&>ol]:pl-4">
                   <ReactMarkdown
-                    className="prose prose-sm prose-invert max-w-none [&>p]:m-0 [&>ul]:m-0 [&>ol]:m-0 [&>p+p]:mt-1.5 [&>ul]:pl-4 [&>ol]:pl-4"
                     components={{
                       a: ({ href, children }) => (
                         <a href={href} target="_blank" rel="noopener noreferrer" className="text-primary underline">
@@ -265,6 +265,7 @@ const ChatView = () => {
                   >
                     {msg.text}
                   </ReactMarkdown>
+                </div>
                 ) : (
                   msg.text
                 )}
