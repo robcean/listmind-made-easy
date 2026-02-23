@@ -119,10 +119,21 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, onReorder
             )}
           >
             {/* Category row */}
-            <div className="flex items-center">
-              {/* Emoji drag handle */}
+            <div
+              className={cn(
+                "flex items-center flex-1 gap-0 min-h-[56px] transition-all",
+                "bg-card border border-border rounded-xl overflow-hidden",
+                isOpen && "border-primary/40 ring-1 ring-primary/20"
+              )}
+              style={
+                isOpen
+                  ? { backgroundColor: `${cat.color}15`, borderColor: `${cat.color}40` }
+                  : undefined
+              }
+            >
+              {/* Emoji as drag handle inside card */}
               <div
-                className="flex items-center justify-center w-10 h-[56px] shrink-0 touch-none select-none cursor-grab text-xl"
+                className="flex items-center justify-center w-12 shrink-0 touch-none select-none cursor-grab text-xl self-stretch"
                 onTouchStart={(e) => handleGripTouchStart(cat.id, e)}
               >
                 {cat.icon}
@@ -130,16 +141,7 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, onReorder
 
               <button
                 onClick={() => toggle(cat.id)}
-                className={cn(
-                  "flex items-center flex-1 gap-3 px-3 py-3 min-h-[56px] transition-all",
-                  "bg-card border border-border rounded-xl",
-                  isOpen && "border-primary/40 ring-1 ring-primary/20"
-                )}
-                style={
-                  isOpen
-                    ? { backgroundColor: `${cat.color}15`, borderColor: `${cat.color}40` }
-                    : undefined
-                }
+                className="flex items-center flex-1 gap-3 px-2 py-3"
               >
                 <span
                   className={cn(
@@ -165,7 +167,7 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, onReorder
             {/* Expanded items */}
             <div
               className={cn(
-                "grid transition-all duration-200 ease-out ml-8",
+                "grid transition-all duration-200 ease-out ml-4",
                 isOpen ? "grid-rows-[1fr] opacity-100 mt-1.5" : "grid-rows-[0fr] opacity-0"
               )}
             >
@@ -227,15 +229,13 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, onReorder
       {draggingCat && dragState.floatingStyle && (
         <div
           style={dragState.floatingStyle}
-          className="rounded-xl shadow-lg shadow-black/20 scale-[1.03] opacity-90"
+          className="rounded-xl shadow-lg shadow-black/20 scale-[1.03] opacity-90 bg-card border border-border overflow-hidden"
         >
-          <div className="flex items-center">
-            <div className="flex items-center justify-center w-10 h-[56px] shrink-0 text-xl">
+          <div className="flex items-center min-h-[56px]">
+            <div className="flex items-center justify-center w-12 shrink-0 text-xl">
               {draggingCat.icon}
             </div>
-            <div
-              className="flex items-center flex-1 gap-3 px-3 py-3 min-h-[56px] bg-card border border-border rounded-xl"
-            >
+            <div className="flex items-center flex-1 gap-3 px-2 py-3">
               <span className="flex-1 text-left text-sm font-medium truncate text-foreground">
                 {draggingCat.name}
               </span>
