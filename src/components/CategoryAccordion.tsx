@@ -12,9 +12,10 @@ interface Props {
   onComplete: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (item: Item) => void;
+  scrollContainerRef?: React.RefObject<HTMLDivElement>;
 }
 
-const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit }: Props) => {
+const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, scrollContainerRef }: Props) => {
   const [openId, setOpenId] = useState<string | null>(null);
   const [itemsMap, setItemsMap] = useState<Record<string, Item[]>>({});
   const [loadingId, setLoadingId] = useState<string | null>(null);
@@ -25,12 +26,19 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit }: Props) 
       const next = prev === id ? null : id;
       if (next) {
         setTimeout(() => {
-          rowRefs.current[next]?.scrollIntoView({ behavior: "smooth", block: "start" });
+          const el = rowRefs.current[next];
+          const container = scrollContainerRef?.current;
+          if (el && container) {
+            const elTop = el.offsetTop - container.offsetTop;
+            container.scrollTo({ top: elTop, behavior: "smooth" });
+          } else if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
         }, 300);
       }
       return next;
     });
-  }, []);
+  }, [scrollContainerRef]);
 
   // Load items when a category is expanded
   useEffect(() => {
