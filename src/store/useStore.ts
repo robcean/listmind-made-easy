@@ -16,6 +16,7 @@ interface AppState {
   addCategory: (cat: Category) => void;
   removeCategory: (id: string) => void;
   updateCategoryItemCount: (categoryId: string, delta: number) => void;
+  reorderCategories: (fromIndex: number, toIndex: number) => void;
 
   // Archived categories
   archivedCategories: Category[];
@@ -86,7 +87,14 @@ export const useStore = create<AppState>()(
           ),
         })),
 
-      // Archived categories
+      reorderCategories: (fromIndex, toIndex) =>
+        set((s) => {
+          const cats = [...s.categories];
+          const [moved] = cats.splice(fromIndex, 1);
+          cats.splice(toIndex, 0, moved);
+          return { categories: cats.map((c, i) => ({ ...c, position: i })) };
+        }),
+
       archivedCategories: [],
       setArchivedCategories: (archivedCategories) => set({ archivedCategories }),
 
