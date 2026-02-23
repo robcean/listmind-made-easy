@@ -1,37 +1,31 @@
 
 
-## Fix: Error de compilación en ChatView.tsx
+## Fix auto-scroll en mobile accordion
 
-### Problema
-`react-markdown` v10 eliminó el soporte para la prop `className` directamente en el componente. Esto causa un error de compilación que impide que el proyecto funcione.
+### Cambio
+Actualizar el cálculo de scroll en `src/components/CategoryAccordion.tsx` para usar `getBoundingClientRect()` en lugar de `offsetTop`.
 
-### Solución
-Envolver `ReactMarkdown` en un `<div>` que lleve la clase CSS, en lugar de pasarla como prop.
-
-### Cambio técnico
-
-**Archivo:** `src/pages/ChatView.tsx`
-
-Cambiar esto:
-```tsx
-<ReactMarkdown
-  className="prose prose-sm prose-invert max-w-none ..."
-  components={{...}}
->
-  {msg.text}
-</ReactMarkdown>
+### Detalle técnico
+En la función `toggle`, dentro del `setTimeout`, reemplazar:
+```
+const elTop = el.offsetTop - container.offsetTop;
+container.scrollTo({ top: elTop, behavior: "smooth" });
+```
+Por:
+```
+const containerRect = container.getBoundingClientRect();
+const elRect = el.getBoundingClientRect();
+const targetTop = container.scrollTop + (elRect.top - containerRect.top);
+container.scrollTo({ top: Math.max(0, targetTop), behavior: "smooth" });
 ```
 
-Por esto:
-```tsx
-<div className="prose prose-sm prose-invert max-w-none [&>p]:m-0 [&>ul]:m-0 [&>ol]:m-0 [&>p+p]:mt-1.5 [&>ul]:pl-4 [&>ol]:pl-4">
-  <ReactMarkdown
-    components={{...}}
-  >
-    {msg.text}
-  </ReactMarkdown>
-</div>
-```
+Esto calcula la posición real del elemento relativa al contenedor visible, sumando el scroll actual, lo que garantiza que la categoría quede alineada al tope sin importar la estructura de layout.
 
-Es un cambio de 1 archivo, sin impacto visual — el resultado se verá exactamente igual.
+### Archivo modificado
+- `src/components/CategoryAccordion.tsx` (solo la función `toggle`, lineas 28-33)
+
+### Sin cambios
+- Vista tablet/desktop
+- Chat view, bottom nav, SwipeableItem
+- Lógica backend
 
