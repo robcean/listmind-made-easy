@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useStore } from "@/store/useStore";
 import {
   fetchCategories,
@@ -39,6 +39,7 @@ const ListsView = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [restoringId, setRestoringId] = useState<string | null>(null);
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
 
   // Load categories on mount
   useEffect(() => {
@@ -193,12 +194,13 @@ const ListsView = () => {
   return (
     <div className="flex flex-col h-full page-transition">
       {/* Accordion for mobile */}
-      <div className="sm:hidden flex-1 overflow-y-auto">
+      <div ref={mobileScrollRef} className="sm:hidden flex-1 overflow-y-auto">
         <CategoryAccordion
           categories={categories}
           onComplete={handleComplete}
           onDelete={handleDelete}
           onEdit={handleEdit}
+          scrollContainerRef={mobileScrollRef}
         />
       </div>
 
