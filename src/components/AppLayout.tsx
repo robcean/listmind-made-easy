@@ -1,10 +1,11 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { LayoutGrid, MessageCircle } from "lucide-react";
+import { LayoutGrid, MessageCircle, Sun, Moon } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { t, setLanguage } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { useLongPress } from "@/hooks/useLongPress";
-import { useCallback, useState } from "react";
+import { Switch } from "@/components/ui/switch";
+import { useCallback, useState, useEffect } from "react";
 import { toast } from "sonner";
 
 const AppLayout = () => {
@@ -13,7 +14,14 @@ const AppLayout = () => {
   const isChat = location.pathname === "/chat";
   const language = useStore((s) => s.language);
   const setLang = useStore((s) => s.setLanguage);
+  const theme = useStore((s) => s.theme);
+  const setTheme = useStore((s) => s.setTheme);
   const [, forceUpdate] = useState(0);
+
+  // Sync theme class on mount
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
 
   const toggleLanguage = useCallback(() => {
     const next = language === "en" ? "es" : "en";
@@ -43,9 +51,14 @@ const AppLayout = () => {
         >
           🔄 {t("app.name")}
         </h1>
-        <span className="text-xs text-muted-foreground uppercase tracking-wider">
-          {language}
-        </span>
+        <div className="flex items-center gap-2">
+          <Sun className="h-4 w-4 text-muted-foreground" />
+          <Switch
+            checked={theme === "dark"}
+            onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+          />
+          <Moon className="h-4 w-4 text-muted-foreground" />
+        </div>
       </header>
 
       {/* Main content */}
