@@ -48,6 +48,10 @@ interface AppState {
   // Language
   language: "en" | "es";
   setLanguage: (lang: "en" | "es") => void;
+
+  // Theme
+  theme: "light" | "dark";
+  setTheme: (theme: "light" | "dark") => void;
 }
 
 export const useStore = create<AppState>()(
@@ -142,11 +146,19 @@ export const useStore = create<AppState>()(
       // Language
       language: "en",
       setLanguage: (language) => set({ language }),
+
+      // Theme
+      theme: "dark",
+      setTheme: (theme) => {
+        document.documentElement.classList.toggle("dark", theme === "dark");
+        set({ theme });
+      },
     }),
     {
       name: "listmind-store",
       partialize: (state) => ({
         language: state.language,
+        theme: state.theme,
       }),
     }
   )
