@@ -8,7 +8,7 @@ import {
   updateItem as apiUpdateItem,
   deleteItem as apiDeleteItem,
 } from "@/services/api";
-import { mockCategories, mockItems } from "@/mocks/data";
+
 import { t } from "@/i18n";
 import { Archive, RotateCcw, ChevronDown } from "lucide-react";
 import SwipeableItem from "@/components/SwipeableItem";
@@ -57,12 +57,9 @@ const ListsView = () => {
           setActiveTab(cats[0].id);
         }
       } catch (err) {
-        console.warn("API unreachable, using mock data:", err);
-        setCategories(mockCategories);
+        console.error("Failed to load categories:", err);
+        setCategories([]);
         setArchivedCategories([]);
-        if (mockCategories.length > 0 && !activeTab) {
-          setActiveTab(mockCategories[0].id);
-        }
       } finally {
         setLoading(false);
       }
@@ -79,9 +76,8 @@ const ListsView = () => {
         const its = await fetchItems(activeTab);
         setItems(its);
       } catch (err) {
-        console.warn("API unreachable, using mock items:", err);
-        const fallback = mockItems.filter((i) => i.categoryId === activeTab);
-        setItems(fallback);
+        console.error("Failed to load items:", err);
+        setItems([]);
       }
     };
     loadItems();

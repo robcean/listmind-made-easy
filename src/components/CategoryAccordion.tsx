@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fetchItems } from "@/services/api";
-import { mockItems } from "@/mocks/data";
+
 import { t } from "@/i18n";
 import SwipeableItem from "@/components/SwipeableItem";
 import { useCategoryDrag } from "@/hooks/useCategoryDrag";
@@ -70,8 +70,7 @@ const CategoryAccordion = ({ categories, onComplete, onDelete, onEdit, onReorder
         const its = await fetchItems(openId);
         setItemsMap((prev) => ({ ...prev, [openId]: its }));
       } catch {
-        const fallback = mockItems.filter((i) => i.categoryId === openId);
-        setItemsMap((prev) => ({ ...prev, [openId]: fallback }));
+        setItemsMap((prev) => ({ ...prev, [openId]: [] }));
       } finally {
         setLoadingId(null);
       }
